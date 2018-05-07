@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="padding_middle">22dp</dimen>
+
+    <dimen name="text_fontsize_small">16sp</dimen>
     <dimen name="text_fontsize_middle">20sp</dimen>
 </resources>

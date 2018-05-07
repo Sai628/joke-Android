@@ -1,11 +1,13 @@
 package com.sai628.joke.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,9 +31,10 @@ public class MainActivity extends Activity
     private ScrollView scrollView;
     private TextView contentTv;
     private ProgressBar progressBar;
+    private ImageView listIv;
 
     private LoadDataTask task;
-    private List<Joke> jokes;
+    private ArrayList<Joke> jokes;
     private Animation animation;
 
 
@@ -42,7 +46,8 @@ public class MainActivity extends Activity
 
         preInitData();
         initView();
-        loadDataAsync();
+        loadDataSync();
+        //loadDataAsync();
     }
 
 
@@ -62,10 +67,29 @@ public class MainActivity extends Activity
 
     private void initView()
     {
-        bgView = findViewById(R.id.background_rl);
-        scrollView = findViewById(R.id.scrollview);
-        contentTv = findViewById(R.id.content_textview);
-        progressBar = findViewById(R.id.progressbar);
+        bgView = findViewById(R.id.activity_main_bg_rl);
+        scrollView = findViewById(R.id.activity_main_scrollview);
+        contentTv = findViewById(R.id.activity_main_content_tv);
+        progressBar = findViewById(R.id.activity_main_progressbar);
+        listIv = findViewById(R.id.activity_main_list_iv);
+        listIv.setOnClickListener(listMenuOnClickListener);
+    }
+
+
+    private void loadDataSync()
+    {
+        try
+        {
+            String content = FileUtil.readAssetContent(this, "joke.json");
+            JSONObject jsonObject = new JSONObject(content);
+            String data = jsonObject.optString("data");
+            List<Joke> jokes = JSONUtil.readModels(data, Joke[].class);
+            updateUI(jokes);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 
@@ -94,14 +118,19 @@ public class MainActivity extends Activity
             return;
         }
 
-        this.jokes = jokes;
-        contentTv.setOnClickListener(onClickListener);
-        showJokeContent(getRandomJoke());
+        this.jokes = new ArrayList<>();
+        this.jokes.addAll(jokes);
+        contentTv.setOnClickListener(contentOnClickListener);
+
+        Joke joke = getRandomJoke();
+        showJokeContent(joke);
     }
 
 
     private void showJokeContent(Joke joke)
     {
+        int colorId = (joke.getId() % 2 == 1) ? R.color.text_bg_color_deep : R.color.text_bg_color_shallow;
+        bgView.setBackgroundColor(getResources().getColor(colorId));
         scrollView.scrollTo(0, 0);
 
         contentTv.clearAnimation();
@@ -117,18 +146,39 @@ public class MainActivity extends Activity
     }
 
 
-    private View.OnClickListener onClickListener = new View.OnClickListener()
+    private View.OnClickListener contentOnClickListener = new View.OnClickListener()
     {
         @Override
         public void onClick(View v)
         {
             Joke joke = getRandomJoke();
-            int colorRes = (joke.getId() % 2 == 1) ? R.color.text_bg_color_deep : R.color.text_bg_color_shallow;
-
-            bgView.setBackgroundColor(getResources().getColor(colorRes));
             showJokeContent(joke);
         }
     };
+
+
+    private View.OnClickListener listMenuOnClickListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            Intent intent = new Intent(MainActivity.this, JokeListActivity.class);
+            intent.putExtra(JokeListActivity.EXTRA_JOKES, jokes);
+            startActivityForResult(intent, 0);
+        }
+    };
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 0)
+        {
+            Joke joke = (Joke) data.getSerializableExtra(JokeListActivity.EXTRA_RESULT_JOKE);
+            showJokeContent(joke);
+        }
+    }
 
 
     private static class LoadDataTask extends AsyncTask<String, Integer, List<Joke>>

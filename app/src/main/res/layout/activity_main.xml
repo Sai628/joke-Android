@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:id="@+id/background_rl"
+    android:id="@+id/activity_main_bg_rl"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +9,7 @@
     tools:context=".activity.MainActivity">
 
     <ScrollView
-        android:id="@+id/scrollview"
+        android:id="@+id/activity_main_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
@@ -18,23 +18,34 @@
         android:scrollbars="vertical">
 
         <TextView
-            android:id="@+id/content_textview"
+            android:id="@+id/activity_main_content_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:lineSpacingMultiplier="1.35"
-            android:textScaleX="1.03"
             android:padding="@dimen/padding_middle"
             android:textColor="@color/text_content_color"
+            android:textScaleX="1.03"
             android:textSize="@dimen/text_fontsize_middle"
             tools:text="Hello World\nHello Android"/>
     </ScrollView>
 
     <ProgressBar
-        android:id="@+id/progressbar"
+        android:id="@+id/activity_main_progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone"
         tools:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/activity_main_list_iv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_round"
+        android:padding="6dp"
+        android:src="@drawable/ic_more"
+        android:textSize="12sp"/>
 </RelativeLayout>

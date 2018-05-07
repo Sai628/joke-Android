@@ -1,12 +1,15 @@
 package com.sai628.joke.model;
 
+import java.io.Serializable;
+
+
 /**
  * @author Sai
  * @ClassName: Joke
  * @Description: 笑话实体类
  * @date 02/05/2018 16:39
  */
-public class Joke
+public class Joke implements Serializable
 {
     private long id;
     private String content;
