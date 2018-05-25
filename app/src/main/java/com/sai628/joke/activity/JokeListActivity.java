@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +22,13 @@ import java.util.List;
 
 public class JokeListActivity extends Activity
 {
-    public static final String EXTRA_JOKES = "jokes";
-    public static final String EXTRA_RESULT_JOKE = "joke";
+    public static final String EXTRA_JOKES = "jokes";  // 跳转到该视图时, 待显示的列表数据键名
+    public static final String EXTRA_INDEX = "index";  // 跳转到该视图时, 自动定位到列表位置的索引值键名
+
+    public static final String EXTRA_RESULT_JOKE = "joke";  // 返回上一页后, 传参时的Joke类参数名
+    public static final String EXTRA_RESULT_INDEX = "index";  // 返回上一页后, 传参时的索引位置参数名
 
     private ListView listView;
-
-    private ArrayList<Joke> jokes;
 
 
     @Override
@@ -35,23 +37,28 @@ public class JokeListActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joke_list);
 
-        initData();
         initView();
     }
 
 
     @SuppressWarnings("unchecked")
-    private void initData()
-    {
-        jokes = (ArrayList<Joke>) getIntent().getSerializableExtra(EXTRA_JOKES);
-    }
-
-
     private void initView()
     {
+        ArrayList<Joke> jokes = (ArrayList<Joke>) getIntent().getSerializableExtra(EXTRA_JOKES);
+        final int position = getIntent().getIntExtra(EXTRA_INDEX, 0);  // 若没传该参数值, 默认为0
+
         listView = findViewById(R.id.activity_joke_list_listview);
         listView.setAdapter(new JokeListAdapter(this, jokes));
         listView.setOnItemClickListener(jokeListOnItemClickListener);
+
+        new Handler().post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                listView.smoothScrollToPositionFromTop(position, 0, 350);
+            }
+        });
     }
 
 
@@ -64,6 +71,7 @@ public class JokeListActivity extends Activity
 
             Intent intent = new Intent();
             intent.putExtra(EXTRA_RESULT_JOKE, joke);
+            intent.putExtra(EXTRA_RESULT_INDEX, position);
             setResult(RESULT_OK, intent);
             finish();
         }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.sai628.joke.R;
 import com.sai628.joke.model.Joke;
+import com.sai628.joke.utils.CollectionUtil;
 import com.sai628.joke.utils.FileUtil;
 import com.sai628.joke.utils.JSONUtil;
 
@@ -35,6 +36,7 @@ public class MainActivity extends Activity
 
     private LoadDataTask task;
     private ArrayList<Joke> jokes;
+    private int currentIndex = -1;
     private Animation animation;
 
 
@@ -84,6 +86,7 @@ public class MainActivity extends Activity
             JSONObject jsonObject = new JSONObject(content);
             String data = jsonObject.optString("data");
             List<Joke> jokes = JSONUtil.readModels(data, Joke[].class);
+            CollectionUtil.shuffle(jokes);
             updateUI(jokes);
         }
         catch (JSONException e)
@@ -122,7 +125,7 @@ public class MainActivity extends Activity
         this.jokes.addAll(jokes);
         contentTv.setOnClickListener(contentOnClickListener);
 
-        Joke joke = getRandomJoke();
+        Joke joke = getNextJoke();
         showJokeContent(joke);
     }
 
@@ -139,10 +142,15 @@ public class MainActivity extends Activity
     }
 
 
-    private Joke getRandomJoke()
+    private Joke getNextJoke()
     {
-        int index = (int) (Math.random() * jokes.size());
-        return jokes.get(index);
+        currentIndex += 1;
+        if (currentIndex >= jokes.size())  // 到了列表最后的位置后,再从头开始
+        {
+            currentIndex = 0;
+        }
+
+        return jokes.get(currentIndex);
     }
 
 
@@ -151,7 +159,7 @@ public class MainActivity extends Activity
         @Override
         public void onClick(View v)
         {
-            Joke joke = getRandomJoke();
+            Joke joke = getNextJoke();
             showJokeContent(joke);
         }
     };
@@ -164,6 +172,7 @@ public class MainActivity extends Activity
         {
             Intent intent = new Intent(MainActivity.this, JokeListActivity.class);
             intent.putExtra(JokeListActivity.EXTRA_JOKES, jokes);
+            intent.putExtra(JokeListActivity.EXTRA_INDEX, currentIndex);
             startActivityForResult(intent, 0);
         }
     };
@@ -176,6 +185,7 @@ public class MainActivity extends Activity
         if (resultCode == RESULT_OK && requestCode == 0)
         {
             Joke joke = (Joke) data.getSerializableExtra(JokeListActivity.EXTRA_RESULT_JOKE);
+            currentIndex = data.getIntExtra(JokeListActivity.EXTRA_RESULT_INDEX, currentIndex);
             showJokeContent(joke);
         }
     }
