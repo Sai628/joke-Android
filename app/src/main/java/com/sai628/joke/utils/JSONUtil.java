@@ -14,6 +14,12 @@ import java.util.List;
  */
 public class JSONUtil
 {
+    /**
+     * 将JSON字符串转换为对应的实体类列表
+     * @param jsonArray 待转换的JSON字符串
+     * @param clazz 待转换的实体类
+     * @return
+     */
     public static <T> List<T> readModels(String jsonArray, Class<T[]> clazz)
     {
         T[] objects = new Gson().fromJson(jsonArray, clazz);
