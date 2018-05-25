@@ -29,6 +29,7 @@ public class JokeListActivity extends Activity
     public static final String EXTRA_RESULT_INDEX = "index";  // 返回上一页后, 传参时的索引位置参数名
 
     private ListView listView;
+    private int index;  // 自动定位到的索引值
 
 
     @Override
@@ -38,6 +39,7 @@ public class JokeListActivity extends Activity
         setContentView(R.layout.activity_joke_list);
 
         initView();
+        scrollToIndex();
     }
 
 
@@ -45,18 +47,22 @@ public class JokeListActivity extends Activity
     private void initView()
     {
         ArrayList<Joke> jokes = (ArrayList<Joke>) getIntent().getSerializableExtra(EXTRA_JOKES);
-        final int position = getIntent().getIntExtra(EXTRA_INDEX, 0);  // 若没传该参数值, 默认为0
+        index = getIntent().getIntExtra(EXTRA_INDEX, 0);  // 若没传该参数值, 默认为0
 
         listView = findViewById(R.id.activity_joke_list_listview);
         listView.setAdapter(new JokeListAdapter(this, jokes));
         listView.setOnItemClickListener(jokeListOnItemClickListener);
+    }
 
+
+    private void scrollToIndex()
+    {
         new Handler().post(new Runnable()
         {
             @Override
             public void run()
             {
-                listView.smoothScrollToPositionFromTop(position, 0, 350);
+                listView.smoothScrollToPositionFromTop(index, 0, 350);
             }
         });
     }
@@ -136,8 +142,8 @@ public class JokeListActivity extends Activity
     }
 
 
-    public static class ViewHolder
+    private static class ViewHolder
     {
-        public TextView textView;
+        TextView textView;
     }
 }

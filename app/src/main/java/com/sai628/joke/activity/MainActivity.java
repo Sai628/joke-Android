@@ -32,7 +32,7 @@ public class MainActivity extends Activity
     private ScrollView scrollView;
     private TextView contentTv;
     private ProgressBar progressBar;
-    private ImageView listIv;
+    private ImageView menuIv;
 
     private LoadDataTask task;
     private ArrayList<Joke> jokes;
@@ -73,8 +73,8 @@ public class MainActivity extends Activity
         scrollView = findViewById(R.id.activity_main_scrollview);
         contentTv = findViewById(R.id.activity_main_content_tv);
         progressBar = findViewById(R.id.activity_main_progressbar);
-        listIv = findViewById(R.id.activity_main_list_iv);
-        listIv.setOnClickListener(listMenuOnClickListener);
+        menuIv = findViewById(R.id.activity_main_menu_iv);
+        menuIv.setOnClickListener(menuOnClickListener);
     }
 
 
@@ -87,6 +87,7 @@ public class MainActivity extends Activity
             String data = jsonObject.optString("data");
             List<Joke> jokes = JSONUtil.readModels(data, Joke[].class);
             CollectionUtil.shuffle(jokes);
+
             updateUI(jokes);
         }
         catch (JSONException e)
@@ -165,7 +166,7 @@ public class MainActivity extends Activity
     };
 
 
-    private View.OnClickListener listMenuOnClickListener = new View.OnClickListener()
+    private View.OnClickListener menuOnClickListener = new View.OnClickListener()
     {
         @Override
         public void onClick(View v)
