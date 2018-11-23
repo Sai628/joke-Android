@@ -9,6 +9,5 @@ An Android demo app about jokes.
 
 # Preview
 
-![](http://oo8lgm5bz.bkt.clouddn.com/2018-05-25-joke-android-preview-00.png?imageView2/2/w/288)
-![](http://oo8lgm5bz.bkt.clouddn.com/2018-05-25-joke-android-preview-01.png?imageView2/2/w/288)
-
+![](https://sai628-github-image.oss-cn-shenzhen.aliyuncs.com/2018-05-25-joke-android-preview-00.png?x-oss-process=image/resize,w_288)
+![](https://sai628-github-image.oss-cn-shenzhen.aliyuncs.com/2018-05-25-joke-android-preview-01.png?x-oss-process=image/resize,w_288)
